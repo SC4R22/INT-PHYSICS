@@ -1,9 +1,13 @@
 # AI Agent Instructions for Teaching Platform Development
 
 ## Project Overview
-You are building a single-instructor teaching platform (similar to Udemy but for one teacher). This is a 6-page React application that must be completed within 1 month. The developer has limited JavaScript/React experience, so provide clear, well-commented code with defensive error handling.
+
+You are building a single-instructor teaching platform (similar to Udemy but for one teacher). This is a 6-page React
+application that must be completed within 1 month. The developer has limited JavaScript/React experience, so provide
+clear, well-commented code with defensive error handling.
 
 ## Tech Stack (MANDATORY)
+
 - **Framework**: React 18+ with Vite
 - **Styling**: Tailwind CSS (match Figma design provided by user)
 - **Language**: JavaScript (NOT TypeScript - developer is new to JS)
@@ -13,6 +17,7 @@ You are building a single-instructor teaching platform (similar to Udemy but for
 - **Component Pattern**: Functional components with React Hooks ONLY
 
 ## Required Libraries & Tools
+
 ```json
 {
   "dependencies": {
@@ -31,6 +36,7 @@ You are building a single-instructor teaching platform (similar to Udemy but for
 ```
 
 ## Project Structure
+
 ```
 src/
 ├── components/
@@ -73,6 +79,7 @@ src/
 ## Core Features & Pages
 
 ### 1. Authentication (Supabase Auth)
+
 - Login/Signup with email & password
 - Protected routes for admin and student areas
 - Role-based access control (admin vs student)
@@ -80,6 +87,7 @@ src/
 - Session management with automatic refresh
 
 **Error Handling Requirements:**
+
 - Validate email format before submission
 - Check password strength (min 8 chars, 1 uppercase, 1 number)
 - Handle network failures gracefully
@@ -87,26 +95,32 @@ src/
 - Implement rate limiting awareness
 
 ### 2. Student Dashboard
+
 **Must Display:**
+
 - Latest watched video/session (resume where left off)
 - All enrolled courses with progress indicators
 - Course access via redemption code system
 - Personal profile settings
 
 **Video Progress Tracking:**
+
 - Save timestamp every 5 seconds while watching
 - Mark video as "completed" at 95% watched
 - Show progress bar on course cards
 - Store in Supabase `video_progress` table
 
 **Error Handling:**
+
 - Handle video loading failures (show retry button)
 - Validate code redemption (check expiry, usage limits)
 - Handle missing course data gracefully
 - Offline detection (disable video playback)
 
 ### 3. Admin Dashboard
+
 **Must Include:**
+
 - Course creation and management
 - Section/module creation within courses
 - Video upload workflow (to Mux)
@@ -114,6 +128,7 @@ src/
 - Student enrollment overview
 
 **Code Generation System:**
+
 - Generate unique alphanumeric codes (12 chars)
 - Set expiration dates for codes
 - Limit number of uses per code
@@ -121,6 +136,7 @@ src/
 - Track redemption history
 
 **Error Handling:**
+
 - Validate all form inputs before submission
 - Handle file upload failures (size limits, format validation)
 - Check for duplicate course names
@@ -128,6 +144,7 @@ src/
 - Show upload progress indicators
 
 ### 4. Video Page
+
 - Mux video player integration
 - Playback controls with custom styling
 - Progress saving (every 5 seconds)
@@ -136,6 +153,7 @@ src/
 - Video cannot be downloaded or shared
 
 **Error Handling:**
+
 - Handle video stream failures
 - Validate user access to video
 - Show appropriate error for expired subscriptions
@@ -143,12 +161,14 @@ src/
 - Prevent direct URL access (check auth + enrollment)
 
 ### 5. Course Redemption Page
+
 - Simple form to enter access code
 - Validation and code redemption
 - Automatic enrollment upon successful redemption
 - Redirect to newly unlocked course
 
 ### 6. Home/Landing Page
+
 - Brief instructor bio
 - Featured courses (with preview/sample lesson)
 - Clear call-to-action for code redemption
@@ -237,6 +257,7 @@ CREATE TABLE video_progress (
 ```
 
 ### Row Level Security (RLS) Policies:
+
 Enable RLS on ALL tables. Examples:
 
 ```sql
@@ -264,6 +285,7 @@ CREATE POLICY "Students update own progress"
 ## Mux Integration
 
 ### Video Upload Flow (Admin):
+
 1. Admin selects video file in form
 2. Frontend creates Mux Direct Upload URL via Supabase Edge Function
 3. Upload video directly to Mux from browser
@@ -272,6 +294,7 @@ CREATE POLICY "Students update own progress"
 6. Show success/error state to admin
 
 ### Video Playback (Student):
+
 1. Verify user enrollment in course
 2. Fetch `mux_playback_id` from database
 3. Use `@mux/mux-player-react` component
@@ -280,6 +303,7 @@ CREATE POLICY "Students update own progress"
 6. Update `video_progress` table in Supabase
 
 **Security:**
+
 - NEVER expose Mux API keys in frontend code
 - Use Supabase Edge Functions for Mux API calls
 - Implement signed playback URLs to prevent unauthorized access
@@ -288,6 +312,7 @@ CREATE POLICY "Students update own progress"
 ## State Management (Zustand)
 
 ### Auth Store Example:
+
 ```javascript
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
@@ -312,6 +337,7 @@ export const useAuthStore = create((set) => ({
 ```
 
 Keep stores simple and focused. Create separate stores for:
+
 - Auth state
 - Course data (if needed for caching)
 - UI state (modals, notifications)
@@ -319,6 +345,7 @@ Keep stores simple and focused. Create separate stores for:
 ## Error Handling Strategy
 
 ### Defensive Coding Requirements:
+
 1. **Always validate user inputs** before submission
 2. **Wrap all async operations** in try-catch blocks
 3. **Check for null/undefined** before accessing nested properties
@@ -327,6 +354,7 @@ Keep stores simple and focused. Create separate stores for:
 6. **Show user-friendly error messages** (not technical stack traces)
 
 ### Error Handling Template:
+
 ```javascript
 const handleOperation = async () => {
     try {
@@ -358,6 +386,7 @@ const handleOperation = async () => {
 ```
 
 ### Common Error Scenarios to Handle:
+
 - Network failures (offline detection)
 - Invalid authentication tokens (expired sessions)
 - Insufficient permissions (admin vs student)
@@ -414,12 +443,14 @@ const createCourseMutation = useMutation({
 ## Styling with Tailwind
 
 ### Match Figma Design:
+
 - Extract exact colors, fonts, spacing from Figma
 - Use Tailwind config to define custom theme values
 - Create reusable component classes with `@apply`
 - Ensure responsive breakpoints match design
 
 ### Tailwind Config Template:
+
 ```javascript
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -441,6 +472,7 @@ export default {
 ```
 
 ### Component Styling Best Practices:
+
 - Use consistent spacing scale (4, 8, 16, 24, 32, 48px)
 - Implement dark mode support if Figma includes it
 - Create shared button/input styles
@@ -449,13 +481,16 @@ export default {
 ## Code Quality Standards
 
 ### Comments & Documentation:
+
 Since the developer is learning JavaScript/React, add:
+
 - **Explanatory comments** for complex logic
 - **JSDoc comments** for function parameters and returns
 - **Inline comments** explaining React hooks usage
 - **TODO comments** for future improvements
 
 ### Example:
+
 ```javascript
 /**
  * Tracks video playback progress and saves to Supabase
@@ -492,6 +527,7 @@ const saveProgress = async (videoId, currentTime) => {
 ```
 
 ### Naming Conventions:
+
 - Components: PascalCase (`VideoPlayer.jsx`)
 - Functions/variables: camelCase (`handleSubmit`, `isLoading`)
 - Constants: UPPER_SNAKE_CASE (`MAX_FILE_SIZE`)
@@ -500,11 +536,13 @@ const saveProgress = async (videoId, currentTime) => {
 ## Performance Considerations
 
 1. **Lazy load routes** with React Router:
+
 ```javascript
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 ```
 
 2. **Memoize expensive computations**:
+
 ```javascript
 const sortedCourses = useMemo(() =>
         courses?.sort((a, b) => a.title.localeCompare(b.title)),
@@ -532,6 +570,7 @@ const sortedCourses = useMemo(() =>
 ## Testing & Debugging
 
 ### Manual Testing Checklist:
+
 - [ ] Student can redeem valid code
 - [ ] Student cannot access videos without enrollment
 - [ ] Progress saves correctly and persists
@@ -545,15 +584,18 @@ const sortedCourses = useMemo(() =>
 ### Common Issues & Solutions:
 
 **"Supabase client not initialized"**
+
 - Ensure `.env` variables are loaded
 - Check `VITE_` prefix on environment variables
 
 **"Video won't play"**
+
 - Verify Mux playback ID is correct
 - Check browser console for CORS errors
 - Ensure user is enrolled in course
 
 **"Progress not saving"**
+
 - Check RLS policies on `video_progress` table
 - Verify user authentication status
 - Look for errors in network tab
@@ -561,6 +603,7 @@ const sortedCourses = useMemo(() =>
 ## Deployment (Vercel)
 
 ### Environment Variables (Vercel Dashboard):
+
 ```
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
@@ -568,11 +611,13 @@ VITE_MUX_ENV_KEY=your_mux_env_key (if using signed URLs)
 ```
 
 ### Build Settings:
+
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Install Command: `npm install`
 
 ### Post-Deployment:
+
 1. Test all auth flows in production
 2. Verify video playback works
 3. Check that admin uploads succeed
@@ -582,6 +627,7 @@ VITE_MUX_ENV_KEY=your_mux_env_key (if using signed URLs)
 ## Communication Guidelines for AI Agent
 
 When generating code:
+
 1. **Explain what you're building** before showing code
 2. **Highlight important sections** with comments
 3. **Mention potential pitfalls** or common mistakes
@@ -589,6 +635,7 @@ When generating code:
 5. **Provide clear next steps** after each component
 
 When encountering ambiguity:
+
 1. **Ask clarifying questions** before making assumptions
 2. **Suggest multiple approaches** when appropriate
 3. **Explain trade-offs** of different solutions
@@ -604,4 +651,5 @@ When encountering ambiguity:
 
 ---
 
-**Remember**: The developer is new to JavaScript/React and has a 1-month deadline. Write clean, commented, defensive code that works reliably and is easy to understand and modify.
+**Remember**: The developer is new to JavaScript/React and has a 1-month deadline. Write clean, commented, defensive
+code that works reliably and is easy to understand and modify.
